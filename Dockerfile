@@ -1,6 +1,6 @@
 FROM maven:3.5.2-jdk-8-alpine AS MAVEN_TOOL_CHAIN
 COPY pom.xml /tmp/
-COPY webapps /tmp/webapps/
+COPY webapp /tmp/webapp
 WORKDIR /tmp/
 RUN mvn package
 
