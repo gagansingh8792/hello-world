@@ -10,6 +10,5 @@ RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package
 FROM tomcat:8-jre8 
 COPY --from=MAVEN_TOOL_CHAIN /tmp/target/webapp.war /usr/local/tomcat/webapps
 EXPOSE 8080
-HEALTHCHECK --interval=1m --timeout=3s 
-CMD curl http://localhost:8080 
+HEALTHCHECK --interval=1m --timeout=3s CMD curl http://localhost:8080 
 
