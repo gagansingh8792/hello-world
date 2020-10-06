@@ -1,14 +1,10 @@
 FROM maven:3.5.2-jdk-8-alpine AS MAVEN_TOOL_CHAIN
 COPY pom.xml /tmp/
-RUN mvn -B dependency:go-offline -f /tmp/pom.xml -s /usr/share/maven/ref/settings-docker.xml
-COPY webapps /tmp/webapps/
+COPY src /tmp/src/
 WORKDIR /tmp/
-RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package
+RUN mvn package
 
-#Pull base image 
 
-FROM tomcat:8-jre8 
-COPY --from=MAVEN_TOOL_CHAIN /tmp/target/webapp.war /usr/local/tomcat/webapps
-EXPOSE 8080
-HEALTHCHECK --interval=1m --timeout=3s CMD curl http://localhost:8080 
-
+FROM tomcat:9.0-jre8-alpine
+COPY --from=MAVEN_TOOL_CHAIN /tmp/target/webapp*.war $CATALINA_HOME/webapps/webapp*.war
+HEALTHCHECK --interval=1m --timeout=3s CMD wget --quiet --tries=1 --spider http://localhost:8080/webapp/ || exit 
